@@ -2,7 +2,11 @@
 
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,22 +19,59 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//register new user route
-Route::post('/users/register', [\App\Http\Controllers\UserController::class, 'store']);
+Route::post('/token/create', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+        'device_name' => 'required',
+    ]);
 
-//login an existed user route
-Route::post('/users/login', [\App\Http\Controllers\UserController::class, 'index']);
+    $user = User::where('email', $request->email)->first();
+
+    if (! $user) {
+        throw ValidationException::withMessages([
+            'email' => ['The provided credentials are incorrect.'],
+        ]);
+    }
+
+    if (!Hash::check($request->password, $user->password)) {
+        throw ValidationException::withMessages([
+            'password' => ['The provided credentials are incorrect.'],
+        ]);
+    }
+
+    $token= $user->createToken($request->device_name)->plainTextToken;
+    
+    $response = [
+        'status' => '200',
+        'data' => [
+            'user' => $user,
+            'token' => $token,
+        ],
+    ];
+
+    return response()->json($response);
+});
 
 Route::group(
     ['middleware' => ['auth:sanctum']], 
     function () {
         Route::get('/user', function (Request $request) { return $request->user(); });
-        Route::post('/users/logout', [\App\Http\Controllers\UserController::class, 'logout']);
+        
+        Route::post('/token/delete', function (Request $request) {
+            //delete all tokens of the user
+            //$request->user()->tokens()->delete();
+
+            $request->user()->currentAccessToken()->delete();
+            
+            $response = [
+                'status' => '204',
+                'data' => 'token was deleted',
+            ];
+            
+            return response()->json($response);
+        });
     }
 );
 
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-
-//Route::get('/test', function (Request $request) { return 'test is here'; });
+Route::get('/test', function () { return 'test is here'; });
