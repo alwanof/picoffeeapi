@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -41,7 +42,7 @@ Route::post('/token/create', function (Request $request) {
     }
 
     $token= $user->createToken($request->device_name)->plainTextToken;
-    
+
     $response = [
         'status' => '200',
         'data' => [
@@ -54,24 +55,30 @@ Route::post('/token/create', function (Request $request) {
 });
 
 Route::group(
-    ['middleware' => ['auth:sanctum']], 
+    ['middleware' => ['auth:sanctum']],
     function () {
         Route::get('/user', function (Request $request) { return $request->user(); });
-        
+
         Route::post('/token/delete', function (Request $request) {
-            //delete all tokens of the user
-            //$request->user()->tokens()->delete();
 
             $request->user()->currentAccessToken()->delete();
-            
+
             $response = [
                 'status' => '204',
                 'data' => 'token was deleted',
             ];
-            
+
             return response()->json($response);
         });
+
+        // Comment
+
+        Route::apiResource('/comment',CommentController::class);
+
+
     }
 );
 
 Route::get('/test', function () { return 'test is here'; });
+
+

@@ -13,6 +13,7 @@ class CreateCommentsTable extends Migration
      */
     public function up()
     {
+
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tweet_id');
@@ -22,6 +23,7 @@ class CreateCommentsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
+
     }
 
     /**
@@ -33,4 +35,6 @@ class CreateCommentsTable extends Migration
     {
         Schema::dropIfExists('comments');
     }
+
+
 }
