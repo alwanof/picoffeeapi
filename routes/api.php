@@ -29,7 +29,7 @@ Route::post('/token/create', function (Request $request) {
 
     $user = User::where('email', $request->email)->first();
 
-    if (! $user) {
+    if (!$user) {
         throw ValidationException::withMessages([
             'email' => ['The provided credentials are incorrect.'],
         ]);
@@ -41,7 +41,7 @@ Route::post('/token/create', function (Request $request) {
         ]);
     }
 
-    $token= $user->createToken($request->device_name)->plainTextToken;
+    $token = $user->createToken($request->device_name)->plainTextToken;
 
     $response = [
         'status' => '200',
@@ -55,9 +55,11 @@ Route::post('/token/create', function (Request $request) {
 });
 
 Route::group(
-    ['middleware' => ['auth:sanctum']],
+    [ 'prefix' => 'v1','middleware' =>  ['auth:sanctum']],
     function () {
-        Route::get('/user', function (Request $request) { return $request->user(); });
+        Route::get('/user', function (Request $request) {
+            return $request->user();
+        });
 
         Route::post('/token/delete', function (Request $request) {
 
@@ -83,6 +85,8 @@ Route::group(
     }
 );
 
-Route::get('/test', function () { return 'test is here'; });
+Route::get('/test', function () {
+    return 'test is here';
+});
 
 
