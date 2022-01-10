@@ -42,9 +42,19 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function comments()
+    public function comment()
     {
 
         return $this->hasMany(Comment::class);
+    }
+
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    public function tweet()
+    {
+        return $this->hasMany(Tweet::class);
     }
 }

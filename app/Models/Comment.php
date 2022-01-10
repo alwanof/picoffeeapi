@@ -19,4 +19,10 @@ class Comment extends Model
     }
 
 
+    public function tweet ()
+    {
+        return $this->belongsTo(Tweet::class);
+    }
+
+
 }
