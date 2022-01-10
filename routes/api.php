@@ -73,7 +73,11 @@ Route::group(
 
         // Comment
 
-        Route::apiResource('/comment',CommentController::class);
+        Route::get('/comments/index', [CommentController::class, 'index']);
+        Route::post('/comments/store', [CommentController::class, 'store']);
+        Route::get('/comments/show/{comment_id}', [CommentController::class, 'show']);
+        Route::put('/comments/update/{comment_id}', [CommentController::class, 'update']);
+        Route::delete('/comments/delete/{comment_id}', [CommentController::class, 'destroy']);
 
 
     }

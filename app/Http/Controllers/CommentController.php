@@ -41,9 +41,9 @@ class CommentController extends Controller
      * @param \App\Models\Comment $comment
      * @return CommentsResource
      */
-    public function show(Comment $comment)
+    public function show(Comment $comment_id)
     {
-        return new CommentsResource($comment);
+        return new CommentsResource($comment_id);
     }
 
     /**
@@ -53,14 +53,14 @@ class CommentController extends Controller
      * @param \App\Models\Comment $comment
      * @return CommentsResource
      */
-    public function update(Request $request, Comment $comment)
+    public function update(Request $request, Comment $comment_id)
     {
-        $comment->update([
+        $comment_id->update([
             'tweet_id' => $request->tweet_id,
             'user_id' => $request->user_id,
-            'body' => ($request->body) ? $request->body:$comment->body,
+            'body' => ($request->body) ? $request->body:$comment_id->body,
         ]);
-        return new CommentsResource($comment);
+        return new CommentsResource($comment_id);
     }
 
     /**
@@ -69,9 +69,9 @@ class CommentController extends Controller
      * @param \App\Models\Comment $comment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Comment $comment)
+    public function destroy(Comment $comment_id)
     {
-        $comment->delete();
+        $comment_id->delete();
         return  response('Comment Deleted',200);
     }
 }
