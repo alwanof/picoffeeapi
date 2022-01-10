@@ -22,4 +22,8 @@ class Tweet extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function like ()
+    {
+        return $this->hasMany(Like::class);
+    }
 }
