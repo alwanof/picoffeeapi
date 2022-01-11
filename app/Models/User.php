@@ -58,18 +58,21 @@ class User extends Authenticatable
         return $this->hasMany(Tweet::class);
     }
 
-    public function following ()
+
+    public function following()
     {
-        return $this->hasMany(Follow::class);
+        return $this->belongsToMany(User::class, 'follows', 'from_user_id', 'to_user_id');
     }
 
-    public function unfollow ()
-    {
-        return $this->hasMany(Follow::class);
-    }
 
-    public function likeuser ()
-    {
-        return $this->hasMany(Like::class);
-    }
+     public function likes ()
+     {
+         return $this->belongsToMany(User::class, 'likes', 'user_id','tweet_id');
+
+     }
+
 }
+
+
+
+
