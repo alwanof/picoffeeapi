@@ -80,6 +80,7 @@ class UserController extends Controller
                 break;
             default:
                 //response {"status":false, "error" : ['wrong act']}
+
         }
     }
 
