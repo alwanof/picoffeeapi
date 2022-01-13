@@ -66,6 +66,21 @@ class UserController extends Controller
 
     public function followUser(Request $request)
     {
+        $user = auth()->user();
+        $following = User::find($request->user_id);
+
+        switch ($request->get('act')) {
+            case "follow":
+                $user->following()->attach($following);
+                //response {"status":true}
+                break;
+            case "unfollow":
+                $user->following()->detach($following);
+                //response {"status":true}
+                break;
+            default:
+                //response {"status":false, "error" : ['wrong act']}
+        }
     }
 
 }
