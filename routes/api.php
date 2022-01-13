@@ -73,7 +73,18 @@ Route::group(
             return response()->json($response);
         });
 
-        // Comment
+        //users
+        Route::get('/users/index',[UserController::class, 'index']);
+        Route::get('/users/show/{UserID}',[UserController::class, 'show']);
+        Route::get('/users/tweets',[UserController::class, 'userTweets']);
+        Route::get('/users/profile',[UserController::class, 'userProfile']);
+        Route::Post('/users/store',[UserController::class, 'store']);
+        Route::post('/users/follow',[UserController::class, 'followUser']);
+        Route::put('/users/update/{UserID}',[UserController::class, 'update']);
+        Route::delete('/users/delete/{UserID}',[UserController::class, 'destroy']);
+
+
+        // Comments
 
         Route::get('/comments/index', [CommentController::class, 'index']);
         Route::post('/comments/store', [CommentController::class, 'store']);
