@@ -56,10 +56,6 @@ class ProfileController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        //$id->edit([
-        //    'url' => $request->url,
-        //    'gender' => $request->gender
-        //]);
         $profile = Profile::findOrFail($id);
         if ($request->url != null){
             $profile->url = $request->url;
@@ -70,7 +66,6 @@ class ProfileController extends Controller
 
         if ($profile->save()){
             return new ProfileResource($profile);
-            //return response()->json(['status' => 204, 'message' => 'attributes where updated']);
         }
         
         return response()->json(['status' => 404, 'message' => 'some attributes are missing']);
