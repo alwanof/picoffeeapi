@@ -120,9 +120,9 @@ Route::group(
 
         Route::delete('/profiles/destory/{id}', [ProfileController::class, 'destroy']);
 
-        Route::post('/profiles/update/{id}', [ProfileController::class, 'update']);
+        Route::put('/profiles/update/{id}', [ProfileController::class, 'update']);
 
-        Route::post('/profiles/edit/{id}', [ProfileController::class, 'edit']);
+        Route::patch('/profiles/edit/{id}', [ProfileController::class, 'edit']);
     }
 );
 
