@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -28,7 +29,7 @@ Route::post('/token/create', function (Request $request) {
 
     $user = User::where('email', $request->email)->first();
 
-    if (! $user) {
+    if (!$user) {
         throw ValidationException::withMessages([
             'email' => ['The provided credentials are incorrect.'],
         ]);
@@ -40,8 +41,8 @@ Route::post('/token/create', function (Request $request) {
         ]);
     }
 
-    $token= $user->createToken($request->device_name)->plainTextToken;
-    
+    $token = $user->createToken($request->device_name)->plainTextToken;
+
     $response = [
         'status' => '200',
         'data' => [
@@ -63,19 +64,39 @@ Route::group(
         //get user current token
         Route::post('/me', function (Request $request) { return $request->user()->currentAccessToken()->plainTextToken; });
         
+        //delete current user token
         Route::post('/token/delete', function (Request $request) {
-            //delete all tokens of the user
-            //$request->user()->tokens()->delete();
 
             $request->user()->currentAccessToken()->delete();
-            
+
             $response = [
                 'status' => '204',
                 'data' => 'token was deleted',
             ];
-            
+
             return response()->json($response);
         });
+
+        //users
+        Route::get('/users/index',[UserController::class, 'index']);
+        Route::get('/users/show/{UserID}',[UserController::class, 'show']);
+        Route::get('/users/tweets',[UserController::class, 'userTweets']);
+        Route::get('/users/profile',[UserController::class, 'userProfile']);
+        Route::Post('/users/store',[UserController::class, 'store']);
+        Route::post('/users/follow',[UserController::class, 'followUser']);
+        Route::put('/users/update/{UserID}',[UserController::class, 'update']);
+        Route::delete('/users/delete/{UserID}',[UserController::class, 'destroy']);
+
+
+        // Comments
+
+        Route::get('/comments/index', [CommentController::class, 'index']);
+        Route::post('/comments/store', [CommentController::class, 'store']);
+        Route::get('/comments/show/{comment_id}', [CommentController::class, 'show']);
+        Route::put('/comments/update/{comment_id}', [CommentController::class, 'update']);
+        Route::delete('/comments/delete/{comment_id}', [CommentController::class, 'destroy']);
+
+
     }
 );
 

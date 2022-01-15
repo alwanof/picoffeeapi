@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CommentsResource;
+use App\Http\Resources\UserResource;
+use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -9,80 +12,76 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index(Request $request)
     {
-        
+        return UserResource::collection(User::paginate(10));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-
+        $new_user = User::create([
+            'profile_id' => $request->profile_id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password
+        ]);
+        return new UserResource($new_user);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+
+    public function show(User $id)
+    {
+        return new UserResource($id);
+    }
+
+
+    public function update(Request $request, User $id)
+    {
+        $id->update([
+            'name' => $request->name,
+            'email' => $request->email
+        ]);
+        return new UserResource($id);
+    }
+
+
+    public function destroy(User $id)
+    {
+        $id->delete();
+        return  response('User has been Deleted Successfully!',200);
+    }
+
+    public function userTweets($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+
+    public function userProfile()
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function followUser(Request $request)
     {
-        //
-    }
+        $user = auth()->user();
+        $following = User::find($request->user_id);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        switch ($request->get('act')) {
+            case "follow":
+                $user->following()->attach($following);
+                //response {"status":true}
+                break;
+            case "unfollow":
+                $user->following()->detach($following);
+                //response {"status":true}
+                break;
+            default:
+                //response {"status":false, "error" : ['wrong act']}
+
+        }
     }
 
 }
