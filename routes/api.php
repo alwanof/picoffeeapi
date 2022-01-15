@@ -54,9 +54,14 @@ Route::post('/token/create', function (Request $request) {
 });
 
 Route::group(
-    ['middleware' => ['auth:sanctum']], 
+    [
+        'middleware' => ['auth:sanctum'],
+    ], 
     function () {
         Route::get('/user', function (Request $request) { return $request->user(); });
+
+        //get user current token
+        Route::post('/me', function (Request $request) { return $request->user()->currentAccessToken()->plainTextToken; });
         
         Route::post('/token/delete', function (Request $request) {
             //delete all tokens of the user
@@ -74,4 +79,6 @@ Route::group(
     }
 );
 
-Route::get('/test', function () { return 'test is here'; });
+Route::prefix('v1')->group(function () {
+    Route::get('/test', function () { return 'test is here'; });
+});
