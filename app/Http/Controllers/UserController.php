@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CommentsResource;
+use App\Http\Resources\UserResource;
+use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -9,146 +12,76 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index(Request $request)
     {
-        $fields = $request->validate([
-            'email' => 'required|string',
-            'password' => 'required|string'
-        ]);
-
-        $user = User::where('email', $fields['email'])->first();
-
-        if($user == false){
-            $response = [
-                'statusCode' => '401',
-                'messsage' => 'user was not fount',
-            ];
-            return(response()->json($response));
-        }
-
-        if(Hash::check($fields['password'], $user->password)){
-            $response = [
-                'statusCode' => '401',
-                'messsage' => 'wrong password',
-                'hash1' => $fields['password'],
-                'hash2' => $user->password,
-            ];
-            return(response()->json($response));
-        }
-
-        $token = $user->createToken('PiCoffeeToken')->plainTextToken;
-
-        $response = [
-            'user' => $user,
-            'token' => $token,
-        ];
-
-        return(response()->json($response)->setStatusCode(200));
+        return UserResource::collection(User::paginate(10));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        $fields = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|string|unique:users,email',
-            'password' => 'required|string|confirmed'
+        $new_user = User::create([
+            'profile_id' => $request->profile_id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password
         ]);
+        return new UserResource($new_user);
+    }
 
-        $user = User::create([
-            'name' => $fields['name'],
-            'email' => $fields['email'],
-            'password' => Hash::make($fields['email']),
+
+    public function show(User $id)
+    {
+        return new UserResource($id);
+    }
+
+
+    public function update(Request $request, User $id)
+    {
+        $id->update([
+            'name' => $request->name,
+            'email' => $request->email
         ]);
-
-        $token = $user->createToken('PiCoffeeAppToken')->plainTextToken;
-        
-        $response = [
-            'user' => $user,
-            'token' => $token,
-        ];
-
-        return(response()->json($response)->setStatusCode(201));
+        return new UserResource($id);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+
+    public function destroy(User $id)
+    {
+        $id->delete();
+        return  response('User has been Deleted Successfully!',200);
+    }
+
+    public function userTweets($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+
+    public function userProfile()
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function followUser(Request $request)
     {
-        //
+        $user = auth()->user();
+        $following = User::find($request->user_id);
+
+        switch ($request->get('act')) {
+            case "follow":
+                $user->following()->attach($following);
+                //response {"status":true}
+                break;
+            case "unfollow":
+                $user->following()->detach($following);
+                //response {"status":true}
+                break;
+            default:
+                //response {"status":false, "error" : ['wrong act']}
+
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function logout(Request $request)
-    {
-        $request->user()->currentAccessToken()->delete();
-        $response = [
-            'statusCode' => '204',
-            'messsage' => 'logout was successful',
-        ];
-        return(response()->json($response));
-    }
 }
