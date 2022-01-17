@@ -60,14 +60,14 @@ Route::post('/token/create', function (Request $request) {
 Route::group(
     [
         'middleware' => ['auth:sanctum'],
-    ], 
+    ],
     function () {
         //get user with current token
         Route::get('/me', function (Request $request) { return $request->user(); });
 
         //get the current user's token
         Route::get('/me/token', function (Request $request) { return response()->json(['token' => $request->bearerToken()]); });
-        
+
         //delete current user token
         Route::post('/token/delete', function (Request $request) {
 
@@ -85,19 +85,19 @@ Route::group(
         //users
         Route::get('/users/index',[UserController::class, 'index']);
 
-        Route::get('/users/show/{UserID}',[UserController::class, 'show']);
+        Route::get('/users/show/{id}',[UserController::class, 'show']);
 
-        Route::get('/users/tweets',[UserController::class, 'userTweets']);
+        Route::get('/users/tweets/{id}',[UserController::class, 'userTweets']);
 
-        Route::get('/users/profile',[UserController::class, 'userProfile']);
+        Route::get('/users/profile/{id}',[UserController::class, 'userProfile']);
 
         Route::Post('/users/store',[UserController::class, 'store']);
 
         Route::post('/users/follow',[UserController::class, 'followUser']);
 
-        Route::put('/users/update/{UserID}',[UserController::class, 'update']);
+        Route::put('/users/update/{id}',[UserController::class, 'update']);
 
-        Route::delete('/users/delete/{UserID}',[UserController::class, 'destroy']);
+        Route::delete('/users/delete/{id}',[UserController::class, 'destroy']);
 
 
         // Comments
