@@ -55,33 +55,32 @@ class UserController extends Controller
 
     public function userTweets($id)
     {
-        //
+        $user = User::find($id);
+        $user->tweet();
+        return TweetResource($id);
     }
 
 
-    public function userProfile()
+    public function userProfile($id)
     {
-        //
+        $user = User::find($id);
+        $user->profile();
+        return ProfileResource($id);
     }
 
     public function followUser(Request $request)
     {
-        $user = auth()->user();
-        $following = User::find($request->user_id);
-
-        switch ($request->get('act')) {
-            case "follow":
-                $user->following()->attach($following);
-                //response {"status":true}
-                break;
-            case "unfollow":
-                $user->following()->detach($following);
-                //response {"status":true}
-                break;
-            default:
-                //response {"status":false, "error" : ['wrong act']}
-
+        $user = User::find($request->id);
+        if(!$user->following())
+        {
+            $user->following()->attach($request->id);
+            $user->save();
         }
+        else{
+            $user->following()->detach($request->id);
+            $user->save();
+        }
+        return response('Status Changed Successfully',200);
     }
 
 }
