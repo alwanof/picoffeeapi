@@ -123,9 +123,26 @@ Route::group(
         Route::put('/profiles/update/{id}', [ProfileController::class, 'update']);
 
         Route::patch('/profiles/edit/{id}', [ProfileController::class, 'edit']);
+
+
+
+        //Tweet
+        Route::get('/tweets', [TweetController::class, 'index']);
+        Route::get('/tweets/{id}', [TweetController::class, 'show']);
+        Route::get('/tweets/top/{id}', [TweetController::class, 'specificTopTweets']);
+        Route::get('/tweets/comments/{id}', [TweetController::class, 'tweetComments']);
+        Route::post('/tweets/store', [TweetController::class, 'store']);
+        Route::post('/tweets/like', [TweetController::class, 'like']);
+        Route::put('/tweets/update/{id}', [TweetController::class, 'update']);
+        Route::delete('/tweets/delete/{id}', [TweetController::class, 'destroy']);
+
+
+
+
+
     }
 );
-
+Route::get('/tweets/top', [TweetController::class, 'topTweets']);
 Route::prefix('v1')->group(function () {
     Route::get('/test', function () { return 'test is here'; });
 });
