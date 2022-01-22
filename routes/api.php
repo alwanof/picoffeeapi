@@ -63,7 +63,7 @@ Route::Post('/users/store',[UserController::class, 'store']);
 
 Route::group(
     [
-        'middleware' => ['auth:sanctum'],
+       'prefix' =>'v1',  'middleware' => ['auth:sanctum'],
     ],
     function () {
         //get user with current token
