@@ -104,7 +104,7 @@ Route::group(
 
 
         // Comments
-        Route::get('/comments/index', [CommentController::class, 'index']);
+        Route::get('/comments', [CommentController::class, 'index']);
 
         Route::post('/comments/store', [CommentController::class, 'store']);
 
