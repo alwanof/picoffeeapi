@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CommentsResource;
+use App\Http\Resources\ProfileResource;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\TweetResource;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -25,7 +27,7 @@ class UserController extends Controller
             'profile_id' => $request->profile_id,
             'name' => $request->name,
             'email' => $request->email,
-            'password' => $request->password
+            'password' => Hash::make($request->password)
         ]);
         return new UserResource($new_user);
     }
@@ -53,33 +55,29 @@ class UserController extends Controller
         return  response('User has been Deleted Successfully!',200);
     }
 
-    public function userTweets($id)
+    public function userTweets(User $id)
     {
         $user = User::find($id);
-        $user->tweet();
-        return TweetResource($id);
+        $user->tweets()->get();
+        return new TweetResource($id);
     }
 
 
-    public function userProfile($id)
+    public function userProfile(User $id)
     {
         $user = User::find($id);
         $user->profile();
-        return ProfileResource($id);
+        return new ProfileResource($id);
     }
 
     public function followUser(Request $request)
     {
-        $user = User::find($request->id);
-        if(!$user->following())
-        {
-            $user->following()->attach($request->id);
-            $user->save();
-        }
-        else{
-            $user->following()->detach($request->id);
-            $user->save();
-        }
+//        $user = User::find($request->from_user_id);
+//        $user->following($user)->detach($request->to_user_id);
+
+        $user = User::find($request->from_user_id);
+        $user->following($user)->attach($request->to_user_id);
+
         return response('Status Changed Successfully',200);
     }
 

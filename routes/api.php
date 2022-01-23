@@ -4,6 +4,7 @@ use App\Http\Controllers\TweetController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TweetController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
@@ -58,9 +59,12 @@ Route::post('/token/create', function (Request $request) {
     return response()->json($response);
 });
 
+//user register
+Route::Post('/users/store',[UserController::class, 'store']);
+
 Route::group(
     [
-        'middleware' => ['auth:sanctum'],
+       'prefix' =>'v1',  'middleware' => ['auth:sanctum'],
     ],
     function () {
         //get user with current token
@@ -92,7 +96,6 @@ Route::group(
 
         Route::get('/users/profile/{id}',[UserController::class, 'userProfile']);
 
-        Route::Post('/users/store',[UserController::class, 'store']);
 
         Route::post('/users/follow',[UserController::class, 'followUser']);
 
@@ -102,7 +105,7 @@ Route::group(
 
 
         // Comments
-        Route::get('/comments/index', [CommentController::class, 'index']);
+        Route::get('/comments', [CommentController::class, 'index']);
 
         Route::post('/comments/store', [CommentController::class, 'store']);
 
