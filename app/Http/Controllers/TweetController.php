@@ -21,8 +21,12 @@ class TweetController extends Controller
     }
 
     public function topTweets(){
-        $all=TweetResource::collection(Tweet::all());
-        return $all->sortBy('likes_count');
+       // return Tweet::withCount(['likes'])->orderBy('tweet_id')->get();
+      //  return response()->json(Tweet::where('tweet_id','1')->with(['likes'])->get());
+      $all=TweetResource::collection(Tweet::all());
+      return $all->sortBy('likes_count');
+
+
     }
 
     public function specificTopTweets($id){
@@ -32,8 +36,10 @@ class TweetController extends Controller
     }
 
     public function tweetComments($id){
+        //$tweet=Tweet::find($id);
+        //return response()->json($tweet::with(['comments'])->get());
+        return response()->json(Tweet::where('id', $id)->with(['comment'])->get());
 
-        return response()->json(Tweet::with(["comments"])->get());
 
         }
 
@@ -43,7 +49,7 @@ class TweetController extends Controller
 
         $tweet->tweet=$request->tweet;
         $tweet->user_id=$request->user_id;
-        //$tweet->likes_count=0;
+       // $tweet->likes_count=0;
 
         $tweet->save();
         return response()->json($tweet);
@@ -61,15 +67,25 @@ class TweetController extends Controller
 
         $tweet=Tweet::find($id);
         $tweet->delete();
-        return response()->json($tweet);
+        return response('Deleted Successfully!',200);
 
     }
 
     public function like(Request $request){
 
         //$tweet=Tweet::find($id);
+
         $tweet = Tweet::find($request->id);
-        $tweet->likes()->attach($request->id);
+
+        if($tweet->likes()->get()->contains($request->user_id)){
+             $tweet->likes()->deattach($request->id);
+        }
+        else {
+             $tweet->likes()->attach($request->id);
+             $tweet->likes_count = $tweet->likes_count++;
+
+        }
+
         $tweet->save();
 
         return response()->json(['success'=>'Status change successfully.']);
