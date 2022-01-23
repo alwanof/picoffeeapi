@@ -135,7 +135,7 @@ Route::group(
         Route::get('/tweets/{id}', [TweetController::class, 'show']);
         Route::get('/tweets/top', [TweetController::class, 'topTweets']);//not working yet
         Route::get('/tweets/top/{id}', [TweetController::class, 'specificTopTweets']);
-        Route::get('/tweets/comments/{id}', [TweetController::class, 'tweetComments']);//not working yet
+        Route::get('/tweets/comments/{id}', [TweetController::class, 'tweetComments']);
         Route::post('/tweets/store', [TweetController::class, 'store']);
         Route::post('/tweets/like', [TweetController::class, 'like']);//not working yet
         Route::put('/tweets/update/{id}', [TweetController::class, 'update']);
