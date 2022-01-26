@@ -17,6 +17,7 @@ class ProfileResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'type' => 'Profiles',
             'attributes' => [
                 'url' => $this->url,
                 'gender' => $this->gender,
