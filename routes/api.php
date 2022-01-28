@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\TweetController;
+
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -133,7 +133,7 @@ Route::group(
         //Tweet
         Route::get('/tweets', [TweetController::class, 'index']);
         Route::get('/tweets/{id}', [TweetController::class, 'show']);
-        Route::get('/tweets/top', [TweetController::class, 'topTweets']);//not working yet
+        Route::get('/tweets/top', [TweetController::class, 'topTweets']);
         Route::get('/tweets/top/{id}', [TweetController::class, 'specificTopTweets']);
         Route::get('/tweets/comments/{id}', [TweetController::class, 'tweetComments']);
         Route::post('/tweets/store', [TweetController::class, 'store']);

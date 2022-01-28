@@ -21,11 +21,10 @@ class TweetController extends Controller
     }
 
     public function topTweets(){
-       // return Tweet::withCount(['likes'])->orderBy('tweet_id')->get();
-      //  return response()->json(Tweet::where('tweet_id','1')->with(['likes'])->get());
-      $all=TweetResource::collection(Tweet::all());
-      return $all->sortBy('likes_count');
+        $tweets = Tweet::with('likes')->withCount('likes')->get();
 
+        $sorted = $tweets->sort();
+        return $tweets;
 
     }
 
@@ -38,7 +37,7 @@ class TweetController extends Controller
     public function tweetComments($id){
         //$tweet=Tweet::find($id);
         //return response()->json($tweet::with(['comments'])->get());
-        return response()->json(Tweet::where('id', $id)->with(['comment'])->get());
+        return response()->json(Tweet::where('id', $id)->with(['comments'])->get());
 
 
         }
