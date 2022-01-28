@@ -7,6 +7,7 @@ use App\Http\Resources\ProfileResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\TweetResource;
 use App\Models\Comment;
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,9 +16,9 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
 
-    public function index(Request $request)
+    public function index()
     {
-        return UserResource::collection(User::paginate(10));
+        return UserResource::collection(User::paginate(11));
     }
 
 
@@ -41,11 +42,18 @@ class UserController extends Controller
 
     public function update(Request $request, User $id)
     {
+        $validation = $request->validate([
+            'name' => 'required',
+            'email' => 'required',
+        ]);
+    if($validation){
         $id->update([
             'name' => $request->name,
             'email' => $request->email
         ]);
         return new UserResource($id);
+    }
+        return response()->json(['status' => 404, 'message' => 'some attributes are missing']);
     }
 
 
@@ -55,30 +63,27 @@ class UserController extends Controller
         return  response('User has been Deleted Successfully!',200);
     }
 
-    public function userTweets(User $id)
+    public function userTweets($id)
     {
         $user = User::find($id);
-        $user->tweets()->get();
-        return new TweetResource($id);
-    }
-
-
-    public function userProfile(User $id)
-    {
-        $user = User::find($id);
-        $user->profile();
-        return new ProfileResource($id);
+        return $user->tweets;
     }
 
     public function followUser(Request $request)
     {
-//        $user = User::find($request->from_user_id);
-//        $user->following($user)->detach($request->to_user_id);
-
         $user = User::find($request->from_user_id);
-        $user->following($user)->attach($request->to_user_id);
 
-        return response('Status Changed Successfully',200);
+        if($user->following()->where('to_user_id',$request->to_user_id)->exists())
+        {
+            $user->following()->detach($request->to_user_id);
+            return response('unfollowed successfully',200);
+        }
+        else
+        {
+            $user->following()->attach($request->to_user_id);
+            return response('followed successfully',200);
+        }
+
     }
 
 }

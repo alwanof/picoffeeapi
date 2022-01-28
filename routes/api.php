@@ -88,18 +88,19 @@ Route::group(
 
 
         //users
-        Route::get('/users/index',[UserController::class, 'index']);
+        Route::get('/users',[UserController::class, 'index']);
 
-        Route::get('/users/show/{id}',[UserController::class, 'show']);
+        Route::get('/users/{id}',[UserController::class, 'show']);
 
         Route::get('/users/tweets/{id}',[UserController::class, 'userTweets']);
 
-        Route::get('/users/profile/{id}',[UserController::class, 'userProfile']);
+// add profile to user index as array
+//        Route::get('/users/profile/{id}',[UserController::class, 'userProfile']);
 
 
         Route::post('/users/follow',[UserController::class, 'followUser']);
 
-        Route::put('/users/update/{id}',[UserController::class, 'update']);
+        Route::post('/users/update/{id}',[UserController::class, 'update']);
 
         Route::delete('/users/delete/{id}',[UserController::class, 'destroy']);
 

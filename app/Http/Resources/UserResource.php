@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -16,9 +18,9 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'type' => 'Users',
+            'type' => 'users',
             'attributes' => [
-                'profile_id' => $this->profile_id,
+                'profile' => $this->profile,
                 'name' => $this->name,
                 'email' => $this->email,
                 'created' => $this->created_at,
