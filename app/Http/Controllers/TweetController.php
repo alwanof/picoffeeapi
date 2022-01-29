@@ -74,20 +74,19 @@ class TweetController extends Controller
 
         //$tweet=Tweet::find($id);
 
-        $tweet = Tweet::find($request->id);
+        $tweet = Tweet::find($request->tweet_id);
 
-        if($tweet->likes()->get()->contains($request->user_id)){
-             $tweet->likes()->deattach($request->id);
+        if($tweet->likes()->where('user_id',$request->user_id)->exists()){
+             $tweet->likes()->detach($request->user_id);
+             return response('unliked successfully',200);
         }
         else {
-             $tweet->likes()->attach($request->id);
-             $tweet->likes_count = $tweet->likes_count++;
+             $tweet->likes()->attach($request->user_id);
 
+             return response('liked successfully',200);
         }
 
-        $tweet->save();
-
-        return response()->json(['success'=>'Status change successfully.']);
+       // return response()->json(['success'=>'Status change successfully.']);
 
     }
 }
