@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ProfileResource;
 use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
@@ -30,11 +31,14 @@ class ProfileController extends Controller
     {
         $profile = Profile::create(
             [
-                //'user_id' => $request->user_id,
+                'user_id' => $request->user_id,
                 'url' => $request->url,
                 'gender' => $request->gender
             ]
         );
+        $user = User::findOrFail($profile->user_id);
+        $user->profile_id = $profile->id;
+        $user->save();
         return new ProfileResource($profile);
     }
 
