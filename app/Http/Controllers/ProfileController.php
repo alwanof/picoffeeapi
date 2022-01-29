@@ -29,6 +29,12 @@ class ProfileController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'user_id' => 'required',
+            'url' => 'required',
+            'gender' => 'required',
+        ]);
+
         $profile = Profile::create(
             [
                 'user_id' => $request->user_id,
