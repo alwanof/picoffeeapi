@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\TweetController;
+
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -88,18 +88,19 @@ Route::group(
 
 
         //users
-        Route::get('/users/index',[UserController::class, 'index']);
+        Route::get('/users',[UserController::class, 'index']);
 
-        Route::get('/users/show/{id}',[UserController::class, 'show']);
+        Route::get('/users/{id}',[UserController::class, 'show']);
 
         Route::get('/users/tweets/{id}',[UserController::class, 'userTweets']);
 
-        Route::get('/users/profile/{id}',[UserController::class, 'userProfile']);
+// add profile to user index as array
+//        Route::get('/users/profile/{id}',[UserController::class, 'userProfile']);
 
 
         Route::post('/users/follow',[UserController::class, 'followUser']);
 
-        Route::put('/users/update/{id}',[UserController::class, 'update']);
+        Route::post('/users/update/{id}',[UserController::class, 'update']);
 
         Route::delete('/users/delete/{id}',[UserController::class, 'destroy']);
 
@@ -133,7 +134,7 @@ Route::group(
         //Tweet
         Route::get('/tweets', [TweetController::class, 'index']);
         Route::get('/tweets/{id}', [TweetController::class, 'show']);
-        Route::get('/tweets/top', [TweetController::class, 'topTweets']);//not working yet
+        Route::get('/tweets/top', [TweetController::class, 'topTweets']);
         Route::get('/tweets/top/{id}', [TweetController::class, 'specificTopTweets']);
         Route::get('/tweets/comments/{id}', [TweetController::class, 'tweetComments']);
         Route::post('/tweets/store', [TweetController::class, 'store']);
