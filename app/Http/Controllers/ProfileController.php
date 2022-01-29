@@ -17,7 +17,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        return ProfileResource::collection(Profile::all())->paginate(15);
+        return ProfileResource::collection(Profile::paginate(10)->with('user'));
     }
 
     /**
@@ -30,6 +30,7 @@ class ProfileController extends Controller
     {
         $profile = Profile::create(
             [
+                //'user_id' => $request->user_id,
                 'url' => $request->url,
                 'gender' => $request->gender
             ]
