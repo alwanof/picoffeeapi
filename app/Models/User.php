@@ -42,7 +42,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function comment()
+    public function comments()
     {
 
         return $this->hasMany(Comment::class);
@@ -53,7 +53,7 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class);
     }
 
-    public function tweet()
+    public function tweets()
     {
         return $this->hasMany(Tweet::class);
     }
@@ -65,14 +65,8 @@ class User extends Authenticatable
     }
 
 
-     public function likes ()
-     {
-         return $this->belongsToMany(User::class, 'likes', 'user_id','tweet_id');
-
-     }
-
+    public function likes()
+    {
+        return $this->belongsToMany(User::class, 'likes', 'user_id', 'tweet_id');
+    }
 }
-
-
-
-

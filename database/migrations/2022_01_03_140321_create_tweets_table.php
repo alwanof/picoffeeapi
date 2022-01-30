@@ -15,9 +15,8 @@ class CreateTweetsTable extends Migration
     {
         Schema::create('tweets', function (Blueprint $table) {
             $table->id();
+            $table->text('tweet');
             $table->unsignedBigInteger('user_id');
-            $table->string('tweet');
-            $table->integer('likes_count');
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
